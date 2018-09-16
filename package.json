@@ -1,0 +1,11 @@
+{
+  "name": "Telegraf-Ts",
+  "version": "1.0.0",
+  "author": "Ivan Surkov <panarama360@gmail.com>",
+  "main": "build/index.js",
+  "repository": "git@github.com:pamarama360/ts-telegraf-decorators",
+  "dependencies": {
+    "glob": "^7.1.3",
+    "telegraf": "^3.23.1"
+  }
+}
