@@ -1,5 +1,5 @@
 {
-  "name": "Telegraf-Ts",
+  "name": "ts-telegraf-decorators",
   "version": "0.0.1",
   "author": "Ivan Surkov <panarama360@gmail.com>",
   "main": "build/index.js",
