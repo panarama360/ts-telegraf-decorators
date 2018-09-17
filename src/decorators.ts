@@ -6,6 +6,8 @@ import {OnMetadata} from "./metadata/OnMetadata";
 import {HearsMetadata} from "./metadata/HearsMetadata";
 import * as tt from "telegraf/typings/telegram-types";
 import {ControllerMetadata} from "./metadata/ControllerMetadata";
+import {LeaveMetadata} from "./metadata/LeaveMetadata";
+import {EnterMetadata} from "./metadata/EnterMetadata";
 
 export function TFController(scene?: string): Function {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
@@ -47,8 +49,17 @@ export function Command(command:string):Function {
     }
 }
 
-// export function Middleware():Function {
-//     return function (target: Function, propertyKey: string, descriptor: PropertyDescriptor) {
-//
-//     }
-// }
+export function Enter():Function {
+    return function (target: Function, propertyKey: string, descriptor: PropertyDescriptor) {
+        MetadataStorage.addEnterMetadata(new EnterMetadata(target,propertyKey))
+        return descriptor;
+    }
+}
+
+export function Leave():Function {
+    return function (target: Function, propertyKey: string, descriptor: PropertyDescriptor) {
+        MetadataStorage.addLeaveMetadata(new LeaveMetadata(target,propertyKey))
+        return descriptor;
+    }
+}
+

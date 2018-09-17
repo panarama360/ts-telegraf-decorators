@@ -1,9 +1,10 @@
 import MetadataStorage from "./MetadataStorage";
+import {IBotOptions} from "./interfaces/IBotOptions";
 const Stage = require('telegraf/stage')
 const Scene = require('telegraf/scenes/base')
 const session = require('telegraf/session')
 
-export function buildFromMetadata(bot: any) {
+export function buildFromMetadata(bot: any, options: IBotOptions): any {
     const helpMethods: Function[] = []
     const startMethods: Function[] = []
     const scenes: {[key:string]:any} = {};
@@ -11,7 +12,12 @@ export function buildFromMetadata(bot: any) {
 
 
     const stage = new Stage()
-    bot.use(session())
+
+    if(options.session)
+        bot.use(options.session)
+    else
+        bot.use(session())
+
     bot.use(stage.middleware())
 
     MetadataStorage
@@ -59,6 +65,21 @@ export function buildFromMetadata(bot: any) {
                 })
             })
 
+        MetadataStorage.getEnterMetadata()
+            .filter(command => command.target == controller.target.prototype)
+            .forEach(value => {
+                handler.enter(function (ctx) {
+                    controllerInstance[value.propertyName](ctx)
+                })
+            })
+        MetadataStorage.getLeaveMetadata()
+            .filter(command => command.target == controller.target.prototype)
+            .forEach(value => {
+                handler.leave(function (ctx) {
+                    controllerInstance[value.propertyName](ctx)
+                })
+            })
+
 
 
     })
@@ -77,4 +98,5 @@ export function buildFromMetadata(bot: any) {
         }
     }
 
+    return bot;
 }

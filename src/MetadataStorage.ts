@@ -4,6 +4,8 @@ import {HelpMetadata} from "./metadata/HelpMetadata";
 import {OnMetadata} from "./metadata/OnMetadata";
 import {HearsMetadata} from "./metadata/HearsMetadata";
 import {ControllerMetadata} from "./metadata/ControllerMetadata";
+import {LeaveMetadata} from "./metadata/LeaveMetadata";
+import {EnterMetadata} from "./metadata/EnterMetadata";
 
 class MetadataStorage {
 
@@ -12,6 +14,9 @@ class MetadataStorage {
     private helpMetadata: HelpMetadata[] = []
     private hearsMetadata: HearsMetadata[] = []
     private onMetadata: OnMetadata[] = []
+    private leaveMetadata: LeaveMetadata[] = []
+    private enterMetadata: EnterMetadata[] = []
+
     private controllerMetadata: ControllerMetadata[] = []
 
     addStartMetadata(metadata: StartMetadata): void{
@@ -60,6 +65,22 @@ class MetadataStorage {
 
     getControllerMetadata(): ControllerMetadata[]{
         return this.controllerMetadata;
+    }
+
+    addLeaveMetadata(metadata: LeaveMetadata): void{
+        this.leaveMetadata.push(metadata)
+    }
+
+    getLeaveMetadata(): LeaveMetadata[]{
+        return this.leaveMetadata;
+    }
+
+    addEnterMetadata(metadata: EnterMetadata): void{
+        this.enterMetadata.push(metadata)
+    }
+
+    getEnterMetadata(): EnterMetadata[]{
+        return this.enterMetadata;
     }
 
 }

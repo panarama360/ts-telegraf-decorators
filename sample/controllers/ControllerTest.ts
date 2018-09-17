@@ -1,66 +1,53 @@
-import {TFController, Start, Command, On, Hears, Help} from '../../src/decorators'
+import {TFController, Start, Command, On, Hears, Help} from '../../src/'
 
+//Controller Example
 @TFController()
 export class ControllerTest {
 
-
-    al: number = 0
-
-
-    constructor(){
-        console.log('constr')
-    }
-
     @Start()
     start1(ctx){
-        console.log('Hello1 '+this.al)
-        this.al ++;
+        ctx.reply('Hello start1')
     }
 
     @Start()
     start2(ctx){
-        console.log('Hello2')
+        ctx.reply('Hello start2')
     }
 
-    @Command('test')
-    test(ctx){
-        console.log('Test!')
-        console.log(ctx)
-        console.log(ctx.scene)
-        ctx.scene.enter('game')
+    @Command('command1')
+    command1(ctx){
+        ctx.reply('Hello command1')
     }
 
-    @Command('testing')
-    testing(ctx){
-        console.log('testing')
-    }
 
     @Hears('hears')
     hears(ctx){
-        console.log('hears')
+        ctx.reply('Hello hears')
     }
 
-    @Hears('hears1')
-    hears1(ctx){
-        console.log(this)
-        console.log('hears1 '+this.al)
-        this.al ++;
+    @Hears(/!.*/)
+    hearsRegex(ctx){
+        ctx.reply('Hello hears regex')
     }
 
 
     @On('sticker')
     sticker(ctx){
-        console.log('sticker', this.al)
-        this.al ++;
-    }
-
-    @Help()
-    help(ctx){
-        console.log('Help')
+        ctx.reply('WOOOW')
     }
 
     @Help()
     help1(ctx){
-        console.log('Help1')
+        ctx.reply('Hello help1')
+    }
+
+    @Help()
+    help2(ctx){
+        ctx.reply('Hello help2')
+    }
+
+    @Command('entergame')
+    enterGame(ctx){
+        ctx.scene.enter('game')
     }
 }

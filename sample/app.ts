@@ -1,7 +1,10 @@
-import {build} from "../src";
+import {buildBot} from "../src";
 
 
-build(process.env.BOT_TOKEN, __dirname+'/controllers/**.js')
-    .startPolling()
-
+buildBot({
+    token: process.env.BOT_TOKEN,
+    // bot: bot                 bot instance
+    // session: session()       custom session
+    pathControllers: __dirname+'/controllers/**.js',
+}).startPolling()
 
