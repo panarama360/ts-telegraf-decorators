@@ -25,7 +25,7 @@ export class ControllerTest {
     
     @Command('ping')
     enterGame(ctx: any){
-        ctx.scene.enter('pong')
+        ctx.reply('pong')
     }
 }
 ```
