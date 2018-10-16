@@ -1,4 +1,6 @@
 import {TFController, Start, Command, On, Hears, Help} from '../../src/'
+import {Inject} from "typedi";
+import {TestService} from "../services/TestService";
 
 //Controller Example
 @TFController()
@@ -49,5 +51,13 @@ export class ControllerTest {
     @Command('entergame')
     enterGame(ctx){
         ctx.scene.enter('game')
+    }
+
+    @Inject()
+    service: TestService
+
+    @Hears('container')
+    async testContainer(ctx){
+        ctx.reply(await this.service.getBotName())
     }
 }

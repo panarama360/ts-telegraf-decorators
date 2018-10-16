@@ -1,5 +1,6 @@
 import MetadataStorage from "./MetadataStorage";
 import {IBotOptions} from "./interfaces/IBotOptions";
+import {getFromContainer} from "./container";
 const Stage = require('telegraf/stage')
 const Scene = require('telegraf/scenes/base')
 const session = require('telegraf/session')
@@ -22,7 +23,7 @@ export function buildFromMetadata(bot: any, options: IBotOptions): any {
 
     MetadataStorage
         .getControllerMetadata().forEach(controller => {
-        let controllerInstance = new (controller.target as any)()
+        let controllerInstance = getFromContainer(controller.target)
         let handler = bot;
         if(controller.scene){
             handler = scenes[controller.scene]||new Scene(controller.scene)
