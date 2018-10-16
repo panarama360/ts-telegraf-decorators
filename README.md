@@ -11,7 +11,7 @@ $ npm install ts-telegraf-decorators
 
 ### Base Examples
 
-Create controller
+**Create controller**
 ```typescript
 import {Start, Command, TFController} from 'ts-telegraf-decorators'
 
@@ -30,7 +30,7 @@ export class ControllerTest {
 }
 ```
 
-Create app.ts
+**Create app.ts**
 ```typescript
 import {buildBot} from "ts-telegraf-decorators";
 //import {ControllerTest} from "./controllers/ControllerTest";
@@ -50,7 +50,7 @@ buildBot({
 
 
 
-###If Use Container
+### If Use Container
 
 **Create service**
 ```typescript
@@ -65,7 +65,7 @@ export class TestService {
 }
 ```
 
-Use Container
+**Use Container**
 ```typescript
 import 'reflect-metadata'
 import {buildBot} from "ts-telegraf-decorators";
@@ -83,7 +83,7 @@ buildBot({
 
 ```
 
-Create controller
+**Create controller**
 ```typescript
 import {Start, Command, TFController} from 'ts-telegraf-decorators'
 
