@@ -1,6 +1,7 @@
 import MetadataStorage from "./MetadataStorage";
 import {IBotOptions} from "./interfaces/IBotOptions";
 import {getFromContainer} from "./container";
+import Telegraf from "telegraf";
 const Stage = require('telegraf/stage')
 const Scene = require('telegraf/scenes/base')
 const session = require('telegraf/session')
@@ -22,7 +23,7 @@ export function buildFromMetadata(bot: any, options: IBotOptions): any {
     bot.use(stage.middleware())
 
     MetadataStorage
-        .getControllerMetadata().forEach(controller => {
+        .controllerMetadata.forEach(controller => {
         let controllerInstance = getFromContainer(controller.target)
         let handler = bot;
         if(controller.scene){
@@ -30,54 +31,55 @@ export function buildFromMetadata(bot: any, options: IBotOptions): any {
             scenes[controller.scene] = handler;
         }
 
-        MetadataStorage.getHelpMetadata()
+        MetadataStorage.helpMetadata
             .filter(help => help.target == controller.target.prototype)
             .forEach(value => {
-                helpMethods.push((ctx)=>{controllerInstance[value.propertyName](ctx)})
+                helpMethods.push((ctx)=>{controllerInstance[value.propertyName](...getInjectParams(ctx, controller.target, value.propertyName))})
             })
 
-        MetadataStorage.getStartMetadata()
+        MetadataStorage.startMetadata
             .filter(start => start.target == controller.target.prototype)
             .forEach(value => {
-                startMethods.push((ctx)=>{controllerInstance[value.propertyName](ctx)})
+                startMethods.push((ctx)=>{controllerInstance[value.propertyName](...getInjectParams(ctx, controller.target, value.propertyName))})
             })
 
-        MetadataStorage.getHearsMetadata()
+        MetadataStorage.hearsMetadata
             .filter(hear => hear.target == controller.target.prototype)
             .forEach(value => {
                handler.hears(value.match, function (ctx) {
-                    controllerInstance[value.propertyName](ctx)
+
+                    controllerInstance[value.propertyName](...getInjectParams(ctx, controller.target, value.propertyName))
                 })
             })
 
-        MetadataStorage.getOnMetadata()
+        MetadataStorage.onMetadata
             .filter(on => on.target == controller.target.prototype)
             .forEach(value => {
                handler.on(value.event, function (ctx) {
-                    controllerInstance[value.propertyName](ctx)
+                    controllerInstance[value.propertyName](...getInjectParams(ctx, controller.target, value.propertyName))
                 })
             })
 
-        MetadataStorage.getCommandMetadata()
+        MetadataStorage.commandMetadata
             .filter(command => command.target == controller.target.prototype)
             .forEach(value => {
                handler.command(value.command, function (ctx) {
-                    controllerInstance[value.propertyName](ctx)
+                    controllerInstance[value.propertyName](...getInjectParams(ctx, controller.target, value.propertyName))
                 })
             })
 
-        MetadataStorage.getEnterMetadata()
+        MetadataStorage.enterMetadata
             .filter(command => command.target == controller.target.prototype)
             .forEach(value => {
                 handler.enter(function (ctx) {
-                    controllerInstance[value.propertyName](ctx)
+                    controllerInstance[value.propertyName](...getInjectParams(ctx, controller.target, value.propertyName))
                 })
             })
-        MetadataStorage.getLeaveMetadata()
+        MetadataStorage.leaveMetadata
             .filter(command => command.target == controller.target.prototype)
             .forEach(value => {
                 handler.leave(function (ctx) {
-                    controllerInstance[value.propertyName](ctx)
+                    controllerInstance[value.propertyName](...getInjectParams(ctx, controller.target, value.propertyName))
                 })
             })
 
@@ -100,4 +102,19 @@ export function buildFromMetadata(bot: any, options: IBotOptions): any {
     }
 
     return bot;
+}
+
+
+function getInjectParams(ctx: any, target: Function, methodName: string): any[]{
+
+    return MetadataStorage
+        .paramMetadata
+        .filter(value => value.target == target.prototype && methodName === value.propertyName)
+        .sort((a, b) => a.index-b.index)
+        .map(value => {
+            if(value.type === 'ctx')
+                return ctx;
+            return ctx[value.type];
+        })
+
 }

@@ -8,10 +8,11 @@ import * as tt from "telegraf/typings/telegram-types";
 import {ControllerMetadata} from "./metadata/ControllerMetadata";
 import {LeaveMetadata} from "./metadata/LeaveMetadata";
 import {EnterMetadata} from "./metadata/EnterMetadata";
+import {ParamsMetadata} from "./metadata/ParamsMetadata";
 
 export function TFController(scene?: string): Function {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-        MetadataStorage.addControllerMetadata(new ControllerMetadata(target,propertyKey, scene))
+        MetadataStorage.controllerMetadata.push(new ControllerMetadata(target,propertyKey, scene))
         return descriptor;
     };
 }
@@ -19,47 +20,68 @@ export function TFController(scene?: string): Function {
 export function Start():Function {
 
     return function (target: Function, propertyKey: string, descriptor: PropertyDescriptor) {
-        MetadataStorage.addStartMetadata(new StartMetadata(target,propertyKey))
+        MetadataStorage.startMetadata.push(new StartMetadata(target,propertyKey))
         return descriptor;
     }
 }
 export function Help():Function {
     return function (target: Function, propertyKey: string, descriptor: PropertyDescriptor) {
-        MetadataStorage.addHelpMetadata(new HelpMetadata(target,propertyKey))
+        MetadataStorage.helpMetadata.push(new HelpMetadata(target,propertyKey))
         return descriptor;
     }
 }
 export function On(event:tt.UpdateType | tt.UpdateType[] | tt.MessageSubTypes | tt.MessageSubTypes[]):Function {
     return function (target: Function, propertyKey: string, descriptor: PropertyDescriptor) {
-        MetadataStorage.addOnMetadata(new OnMetadata(target,propertyKey,event))
+        MetadataStorage.onMetadata.push(new OnMetadata(target,propertyKey,event))
         return descriptor;
     }
 }
 export function Hears(match:string | RegExp):Function {
     return function (target: Function, propertyKey: string, descriptor: PropertyDescriptor) {
-        MetadataStorage.addHearsMetadata(new HearsMetadata(target,propertyKey,match))
+        MetadataStorage.hearsMetadata.push(new HearsMetadata(target,propertyKey,match))
         return descriptor;
     }
 }
 
 export function Command(command:string):Function {
     return function (target: Function, propertyKey: string, descriptor: PropertyDescriptor) {
-        MetadataStorage.addCommandMetadata(new CommandMetadata(target,propertyKey, command))
+        MetadataStorage.commandMetadata.push(new CommandMetadata(target,propertyKey, command))
         return descriptor;
     }
 }
 
 export function Enter():Function {
     return function (target: Function, propertyKey: string, descriptor: PropertyDescriptor) {
-        MetadataStorage.addEnterMetadata(new EnterMetadata(target,propertyKey))
+        MetadataStorage.enterMetadata.push(new EnterMetadata(target,propertyKey))
         return descriptor;
     }
 }
 
 export function Leave():Function {
     return function (target: Function, propertyKey: string, descriptor: PropertyDescriptor) {
-        MetadataStorage.addLeaveMetadata(new LeaveMetadata(target,propertyKey))
+        MetadataStorage.leaveMetadata.push(new LeaveMetadata(target,propertyKey))
         return descriptor;
+    }
+}
+
+export function TFContext():Function {
+    return function (target: Function, propertyKey: string, parameterIndex: number) {
+        MetadataStorage.paramMetadata.push(new ParamsMetadata(target, propertyKey, parameterIndex, 'ctx'))
+    }
+}
+export function TFTelegram():Function {
+    return function (target: Function, propertyKey: string, parameterIndex: number) {
+        MetadataStorage.paramMetadata.push(new ParamsMetadata(target, propertyKey, parameterIndex, 'telegram'))
+    }
+}
+export function TFChat():Function {
+    return function (target: Function, propertyKey: string, parameterIndex: number) {
+        MetadataStorage.paramMetadata.push(new ParamsMetadata(target, propertyKey, parameterIndex, 'chat'))
+    }
+}
+export function TFMessage():Function {
+    return function (target: Function, propertyKey: string, parameterIndex: number) {
+        MetadataStorage.paramMetadata.push(new ParamsMetadata(target, propertyKey, parameterIndex, 'message'))
     }
 }
 
