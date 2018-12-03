@@ -15,10 +15,7 @@ export function buildFromMetadata(bot: any, options: IBotOptions): any {
 
     const stage = new Stage()
 
-    if(options.session)
-        bot.use(options.session)
-    else
-        bot.use(session())
+    bot.use(options.session ? options.session : session())
 
     bot.use(stage.middleware())
 
@@ -41,6 +38,14 @@ export function buildFromMetadata(bot: any, options: IBotOptions): any {
             .filter(start => start.target == controller.target.prototype)
             .forEach(value => {
                 startMethods.push((ctx)=>{controllerInstance[value.propertyName](...getInjectParams(ctx, controller.target, value.propertyName))})
+            })
+
+        MetadataStorage.actionMetadata
+            .filter(action => action.target == controller.target.prototype)
+            .forEach(value => {
+                handler.action(value.action, function (ctx) {
+                    controllerInstance[value.propertyName](...getInjectParams(ctx, controller.target, value.propertyName))
+                })
             })
 
         MetadataStorage.hearsMetadata

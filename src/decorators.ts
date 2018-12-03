@@ -9,6 +9,7 @@ import {ControllerMetadata} from "./metadata/ControllerMetadata";
 import {LeaveMetadata} from "./metadata/LeaveMetadata";
 import {EnterMetadata} from "./metadata/EnterMetadata";
 import {ParamsMetadata} from "./metadata/ParamsMetadata";
+import {ActionMetadata} from "./metadata";
 
 export function TFController(scene?: string): Function {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
@@ -53,6 +54,13 @@ export function Command(command:string):Function {
 export function Enter():Function {
     return function (target: Function, propertyKey: string, descriptor: PropertyDescriptor) {
         MetadataStorage.enterMetadata.push(new EnterMetadata(target,propertyKey))
+        return descriptor;
+    }
+}
+
+export function Action(action:string | RegExp):Function {
+    return function (target: Function, propertyKey: string, descriptor: PropertyDescriptor) {
+        MetadataStorage.actionMetadata.push(new ActionMetadata(target,propertyKey, action))
         return descriptor;
     }
 }

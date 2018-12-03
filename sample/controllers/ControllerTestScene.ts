@@ -1,10 +1,11 @@
 import {TFController, Start, Command, On, Hears, Help, Enter} from '../../src/decorators'
+import {TFContext} from "../../src";
 
 @TFController('game')
 export class ControllerTestScene {
 
     @Enter()
-    enter(ctx){
+    enter(@TFContext()ctx){
         ctx.reply('Hello Scene game')
     }
 

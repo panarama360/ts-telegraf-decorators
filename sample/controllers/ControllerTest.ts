@@ -21,8 +21,9 @@ export class ControllerTest {
     service: TestService
 
     @Hears('container')
-    async testContainer(@TFContext()ctx: ContextMessageUpdate, @TFMessage()msg:IncomingMessage, @TFChat()chat: Chat, @TFTelegram() telegram: Telegram){
-        ctx.reply(await this.service.getBotName())
+    async testContainer(@TFContext()ctx, @TFMessage()msg:IncomingMessage, @TFChat()chat: Chat, @TFTelegram() telegram: Telegram){
+        // ctx.reply(await this.service.getBotName())
+        ctx.scene.enter('game')
     }
 
 }
