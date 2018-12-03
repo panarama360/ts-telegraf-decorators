@@ -3,12 +3,12 @@ import {buildBot} from "../src";
 //import {ControllerTest} from "./controllers/ControllerTest";
 import {Container} from "typedi";
 
-buildBot({
-    token: process.env.BOT_TOKEN,
+const bot = buildBot({
+    token: '<TOKEN>',
     container: Container,
     // bot: bot                 bot instance
     // session: session()       custom session
-    controllers: [__dirname+'/controllers/**.js'],
+    controllers: [__dirname+'/controllers/**.ts'],
     // or controllers: [ControllerTest],
 }).startPolling()
 
