@@ -19,12 +19,12 @@ import {Start, Command, TFController} from 'ts-telegraf-decorators'
 export class ControllerTest {
 
     @Start()
-    start(ctx: any){
+    start(@TFContext() ctx){
         ctx.reply('Hello start')
     }
     
     @Command('ping')
-    ping(ctx: any){
+    ping(@TFContext() ctx){
         ctx.reply('pong')
     }
 }
@@ -94,12 +94,12 @@ export class ControllerTest {
     service: TestService
     
     @Start()
-    start(ctx: any){
+    start(@TFContext() ctx){
         ctx.reply('Hello start')
     }
     
     @Command('ping')
-    async ping(ctx: any){
+    async ping(@TFContext() ctx){
         ctx.reply('pong '+ await this.service.getBotName())
     }
 }
