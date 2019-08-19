@@ -18,9 +18,9 @@
     "ts"
   ],
   "dependencies": {
-    "glob": "^7.1.3",
-    "reflect-metadata": "^0.1.12",
-    "telegraf": "^3.23.1",
+    "glob": "^7.1.4",
+    "reflect-metadata": "^0.1.13",
+    "telegraf": "^3.32.0",
     "typedi": "^0.8.0"
   }
 }
