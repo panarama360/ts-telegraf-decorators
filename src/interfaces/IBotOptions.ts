@@ -6,4 +6,5 @@ export interface IBotOptions {
     token?: string,
     session?: any,
     controllers: Function[]|string[],
+    stage?: any
 }

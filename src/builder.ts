@@ -13,7 +13,7 @@ export function buildFromMetadata(bot: any, options: IBotOptions): any {
 
 
 
-    const stage = new Stage()
+    const stage = options.stage || new Stage();
 
     bot.use(options.session ? options.session : session())
 
