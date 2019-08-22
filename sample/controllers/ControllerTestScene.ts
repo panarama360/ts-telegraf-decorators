@@ -1,7 +1,7 @@
-import {TFController, Start, Command, On, Hears, Help, Enter} from '../../src/decorators'
+import {TFController, Start, Command, On, Hears, Help, Enter, TFScene} from '../../src/decorators'
 import {TFContext} from "../../src";
 
-@TFController('game')
+@TFScene('game')
 export class ControllerTestScene {
 
     @Enter()
@@ -10,7 +10,7 @@ export class ControllerTestScene {
     }
 
     @Hears('ok')
-    ok(ctx){
+    ok(@TFContext()ctx){
         ctx.reply('OK!!!!')
     }
 }

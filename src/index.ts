@@ -1,4 +1,4 @@
-import Telegraf, {ContextMessageUpdate} from 'telegraf'
+import Telegraf from 'telegraf'
 import * as path from "path";
 import {buildFromMetadata} from "./builder";
 import {IBotOptions} from "./interfaces/IBotOptions";
@@ -6,12 +6,8 @@ import {getContainer, useContainer} from "./container";
 
 const glob = require("glob");
 
-export * from './decorators'
-export * from './interfaces/IBotOptions'
-export * from './metadata'
-
 export function buildBot(options: IBotOptions) {
-    if(options.container) useContainer(options.container)
+    if (options.container) useContainer(options.container)
     let bot = options.bot || new Telegraf(options.token)
     getContainer().set(Telegraf, bot);
     if (!(options.controllers as any[]).every(value => value instanceof Function))
@@ -22,3 +18,6 @@ export function buildBot(options: IBotOptions) {
     return buildFromMetadata(bot, options);
 }
 
+export * from './decorators'
+export * from './interfaces/IBotOptions'
+export * from './metadata'
