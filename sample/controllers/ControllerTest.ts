@@ -1,17 +1,9 @@
-import {
-    TFController,
-    Start,
-    Command,
-    On,
-    Hears,
-    Help,
-    TFMessage,
-    TFChat, TFTelegram, TFContext, Leave, Enter
-} from '../../src/'
+import {Hears, Help, TFChat, TFContext, TFController, TFMessage, TFTelegram} from '../../src/'
 import {Inject} from "typedi";
 import {TestService} from "../services/TestService";
 import {Chat, IncomingMessage} from 'telegraf/typings/telegram-types';
 import {Telegram} from "telegraf";
+import {CurrentUser} from "../params";
 
 
 @TFController()
@@ -21,16 +13,15 @@ export class ControllerTest {
     @Inject()
     service: TestService
 
-    @Hears('qwe')
-    @Command('qwe')
-    async testContainer(@TFContext()ctx, @TFMessage()msg:IncomingMessage, @TFChat()chat: Chat, @TFTelegram() telegram: Telegram){
+    @Hears('test')
+    async test(@TFContext()ctx, @TFMessage()msg: IncomingMessage, @TFChat()chat: Chat, @TFTelegram() telegram: Telegram) {
         // ctx.reply(await this.service.getBotName())
         ctx.scene.enter('steps')
         // console.log('Hello');
     }
 
-    @Enter()
-    enter(@TFContext()ctx){
-        ctx.reply('Hello Scene game')
+    @Help()
+    async enter(@TFContext()ctx, @CurrentUser() user) {
+        ctx.reply('My name is ' + await this.service.getBotName())
     }
 }

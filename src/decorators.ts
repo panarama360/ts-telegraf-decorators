@@ -3,11 +3,10 @@ import * as tt from "telegraf/typings/telegram-types";
 import {ParamsMetadata} from "./metadata/ParamsMetadata";
 import {ComposerMetadata, ComposerOptions} from "./metadata/ComposerMetadata";
 import {WizardStepMetadata} from "./metadata/WizardStepMetadata";
-import {Composer as Comp} from "telegraf";
+import {Composer as Comp, Context, ContextMessageUpdate} from "telegraf";
 
 export function TFController(compose?: (composer: Comp<any>) => void): Function {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-
         Composer({
             type: "controller",
             data: {
@@ -51,7 +50,7 @@ export function TFWizard(name?: string): Function {
 }
 
 export function Composer(options: ComposerOptions): Function {
-    return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+    return function (target: Function, propertyKey: string, descriptor: PropertyDescriptor) {
         MetadataStorage.composerMetadata.push(new ComposerMetadata(target, options))
         return descriptor;
     };
@@ -59,7 +58,7 @@ export function Composer(options: ComposerOptions): Function {
 
 export function Start(): Function {
 
-    return function (target: Function, propertyKey: string, descriptor: PropertyDescriptor) {
+    return function (target: Object, propertyKey: string, descriptor: PropertyDescriptor) {
         MetadataStorage.handlers.push({
             propertyName: propertyKey,
             target,
@@ -71,7 +70,7 @@ export function Start(): Function {
 }
 
 export function Help(): Function {
-    return function (target: Function, propertyKey: string, descriptor: PropertyDescriptor) {
+    return function (target: Object, propertyKey: string, descriptor: PropertyDescriptor) {
         MetadataStorage.handlers.push({
             propertyName: propertyKey,
             target,
@@ -83,7 +82,7 @@ export function Help(): Function {
 }
 
 export function On(event: tt.UpdateType | tt.UpdateType[] | tt.MessageSubTypes | tt.MessageSubTypes[]): Function {
-    return function (target: Function, propertyKey: string, descriptor: PropertyDescriptor) {
+    return function (target: Object, propertyKey: string, descriptor: PropertyDescriptor) {
 
         MetadataStorage.handlers.push({
             propertyName: propertyKey,
@@ -96,7 +95,7 @@ export function On(event: tt.UpdateType | tt.UpdateType[] | tt.MessageSubTypes |
 }
 
 export function Hears(match: string | RegExp): Function {
-    return function (target: Function, propertyKey: string, descriptor: PropertyDescriptor) {
+    return function (target: Object, propertyKey: string, descriptor: PropertyDescriptor) {
         MetadataStorage.handlers.push({
             propertyName: propertyKey,
             target,
@@ -108,7 +107,7 @@ export function Hears(match: string | RegExp): Function {
 }
 
 export function Command(command: string): Function {
-    return function (target: Function, propertyKey: string, descriptor: PropertyDescriptor) {
+    return function (target: Object, propertyKey: string, descriptor: PropertyDescriptor) {
         MetadataStorage.handlers.push({
             propertyName: propertyKey,
             target,
@@ -120,7 +119,7 @@ export function Command(command: string): Function {
 }
 
 export function Enter(): Function {
-    return function (target: Function, propertyKey: string, descriptor: PropertyDescriptor) {
+    return function (target: Object, propertyKey: string, descriptor: PropertyDescriptor) {
         MetadataStorage.handlers.push({
             propertyName: propertyKey,
             target,
@@ -132,7 +131,7 @@ export function Enter(): Function {
 }
 
 export function Action(action: string | RegExp): Function {
-    return function (target: Function, propertyKey: string, descriptor: PropertyDescriptor) {
+    return function (target: Object, propertyKey: string, descriptor: PropertyDescriptor) {
 
         MetadataStorage.handlers.push({
             propertyName: propertyKey,
@@ -145,7 +144,7 @@ export function Action(action: string | RegExp): Function {
 }
 
 export function Leave(): Function {
-    return function (target: Function, propertyKey: string, descriptor: PropertyDescriptor) {
+    return function (target: Object, propertyKey: string, descriptor: PropertyDescriptor) {
         MetadataStorage.handlers.push({
             propertyName: propertyKey,
             target,
@@ -156,27 +155,25 @@ export function Leave(): Function {
     }
 }
 
-export function TFContext(): Function {
-    return function (target: Function, propertyKey: string, parameterIndex: number) {
-        MetadataStorage.paramMetadata.push(new ParamsMetadata(target, propertyKey, parameterIndex, 'ctx'));
+export const TFContext = createParamDecorator(ctx => {
+    return ctx;
+});
+
+export const TFTelegram = createParamDecorator(ctx => {
+    return ctx.telegram;
+});
+
+export const TFChat = createParamDecorator(ctx => {
+    return ctx.chat
+});
+
+export const TFMessage = createParamDecorator(ctx => {
+    return ctx.message
+});
+
+
+export function createParamDecorator(foo: (ctx: Context | ContextMessageUpdate)=>any){
+    return () => (target: any, propertyKey: string, parameterIndex: number) => {
+        MetadataStorage.paramMetadata.push(new ParamsMetadata(target, propertyKey, parameterIndex, foo));
     }
 }
-
-export function TFTelegram(): Function {
-    return function (target: Function, propertyKey: string, parameterIndex: number) {
-        MetadataStorage.paramMetadata.push(new ParamsMetadata(target, propertyKey, parameterIndex, 'telegram'));
-    }
-}
-
-export function TFChat(): Function {
-    return function (target: Function, propertyKey: string, parameterIndex: number) {
-        MetadataStorage.paramMetadata.push(new ParamsMetadata(target, propertyKey, parameterIndex, 'chat'));
-    }
-}
-
-export function TFMessage(): Function {
-    return function (target: Function, propertyKey: string, parameterIndex: number) {
-        MetadataStorage.paramMetadata.push(new ParamsMetadata(target, propertyKey, parameterIndex, 'message'));
-    }
-}
-

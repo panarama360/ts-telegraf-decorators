@@ -85,8 +85,6 @@ buildBot({
 
 **Create controller**
 ```typescript
-import {Start, Command, TFController} from 'ts-telegraf-decorators'
-
 @TFController()
 export class ControllerTest {
 
@@ -103,3 +101,73 @@ export class ControllerTest {
         ctx.reply('pong '+ await this.service.getBotName())
     }
 }
+````
+
+**Create Wizard**
+```typescript
+@TFWizard('steps')
+export class WizardController {
+
+
+    @TFWizardStep(1)
+    hello(@TFContext() ctx) {
+        console.log('step 1');
+        return ctx.wizard.next();
+    }
+
+    @TFWizardStep(2)
+    hello2(@TFContext() ctx) {
+        console.log('step 2');
+        return ctx.wizard.next();
+    }
+
+    @TFWizardStep(3)
+    @Hears('hello')
+    hello3(@TFContext() ctx) {
+        console.log('step 3');
+        return ctx.wizard.next();
+    }
+
+    @TFWizardStep(3)
+    @Command('test')
+    hello4(@TFContext() ctx) {
+        console.log('step 3');
+        return ctx.wizard.next();
+    }
+
+    @TFWizardStep(3)
+    @Command('hello')
+    hello5(@TFContext() ctx) {
+        console.log('step 3')
+        return ctx.scene.leave();
+    }
+
+    @Command('exit')
+    exit(@TFContext() ctx) {
+        return ctx.scene.leave();
+    }
+
+    @Leave()
+    leave(@TFContext() ctx) {
+        console.log('Leave');
+    }
+}
+````
+
+**Create Custom Inject Parameters**
+```typescript
+export const CurrentUser = createParamDecorator(ctx => {
+    return (ctx as any).user;
+})
+
+```
+**Use Parameters**
+```typescript
+@TFController()
+class AnyController {
+      @Help()
+      async enter(@TFContext()ctx, @CurrentUser() user) {
+          ctx.reply('My name is ' + await this.service.getBotName())
+      }
+}
+```

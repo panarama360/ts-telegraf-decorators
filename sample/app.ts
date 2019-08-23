@@ -3,7 +3,7 @@ import {buildBot} from "../src";
 import {Container} from "typedi";
 
 const bot = buildBot({
-    token: process.env.BOT_TOKEN,
+    token: "705353703:AAHfcsPcOGSyraqVe-u123s5967Lv-X2Rl0",
     container: Container,
     // bot: bot                 bot instance
     // session: session()       custom session

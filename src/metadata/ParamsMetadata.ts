@@ -1,8 +1,8 @@
 export class ParamsMetadata {
-    constructor(public target: Function,
+    constructor(public target: Object,
                 public propertyName: string,
                 public index: number,
-                public type: string
+                public foo: Function
     ) {
     }
 }

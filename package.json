@@ -1,10 +1,14 @@
 {
   "name": "ts-telegraf-decorators",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "author": "Ivan Surkov <panarama360@gmail.com>",
   "main": "build/src/index.js",
   "typings": "build/types/src/index.d.ts",
   "repository": "git@github.com:pamarama360/ts-telegraf-decorators",
+  "scripts": {
+    "test": "jest",
+    "example": "ts-node sample/app.ts"
+  },
   "keywords": [
     "telegraf",
     "telegram",
@@ -22,5 +26,11 @@
     "reflect-metadata": "^0.1.13",
     "telegraf": "^3.32.0",
     "typedi": "^0.8.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.18",
+    "jest": "^24.9.0",
+    "ts-jest": "^24.0.2",
+    "typescript": "^3.5.3"
   }
 }

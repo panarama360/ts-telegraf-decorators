@@ -47,7 +47,6 @@ function buildScene(stage: any, controllerScene: ComposerMetadata, controllerIns
 }
 
 function buildController(bot: any, controller: ComposerMetadata, controllerInstance: any) {
-    // @ts-ignore
     const composer = new Composer();
     MetadataStorage
         .handlers
@@ -109,9 +108,7 @@ function getInjectParams(ctx: any, target: Function, methodName: string): any[] 
         .filter(value => value.target == target.prototype && methodName === value.propertyName)
         .sort((a, b) => a.index - b.index)
         .map(value => {
-            if (value.type === 'ctx')
-                return ctx;
-            return ctx[value.type];
+            return value.foo(ctx);
         })
 
 }
