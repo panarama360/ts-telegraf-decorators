@@ -1,6 +1,17 @@
-import {Action, buildBot, Command, Hears, Help, On, Start, TFContext, TFController, TFMessage} from "../src";
+import {
+    Action,
+    buildBot,
+    Command,
+    Hears,
+    Help,
+    MetadataArgsStorage,
+    On,
+    Start,
+    TFContext,
+    TFController,
+    TFMessage
+} from "../src";
 import {Container} from "typedi";
-import MetadataStorage from "../src/MetadataStorage";
 import Telegraf from "telegraf";
 
 const BaseTextMessage = {
@@ -45,31 +56,31 @@ class TestController{
 
 describe('Add Metadata Controller', () => {
     it('add controller', function () {
-        expect(MetadataStorage.composerMetadata.find(value => value.target.prototype == TestController.prototype)).toBeDefined();
+        expect(MetadataArgsStorage.composerMetadata.find(value => value.target.prototype == TestController.prototype)).toBeDefined();
     });
 
     it('add start', function () {
-        expect(MetadataStorage.handlers.find(value => value.target == TestController.prototype && value.type == "start")).toBeDefined();
+        expect(MetadataArgsStorage.handlers.find(value => value.target == TestController.prototype && value.type == "start")).toBeDefined();
     });
 
     it('add help', function () {
-        expect(MetadataStorage.handlers.find(value => value.target == TestController.prototype && value.type == "help")).toBeDefined();
+        expect(MetadataArgsStorage.handlers.find(value => value.target == TestController.prototype && value.type == "help")).toBeDefined();
     });
 
     it('add action', function () {
-        expect(MetadataStorage.handlers.find(value => value.target == TestController.prototype && value.type == "action")).toBeDefined();
+        expect(MetadataArgsStorage.handlers.find(value => value.target == TestController.prototype && value.type == "action")).toBeDefined();
     });
 
     it('add command', function () {
-        expect(MetadataStorage.handlers.find(value => value.target == TestController.prototype && value.type == "command")).toBeDefined();
+        expect(MetadataArgsStorage.handlers.find(value => value.target == TestController.prototype && value.type == "command")).toBeDefined();
     });
 
     it('add hears', function () {
-        expect(MetadataStorage.handlers.find(value => value.target == TestController.prototype && value.type == "hears")).toBeDefined();
+        expect(MetadataArgsStorage.handlers.find(value => value.target == TestController.prototype && value.type == "hears")).toBeDefined();
     });
 
     it('add inject parameters', function () {
-        expect(MetadataStorage.paramMetadata.find(value => value.target == TestController.prototype && value.propertyName == 'start')).toBeDefined();
+        expect(MetadataArgsStorage.paramMetadata.find(value => value.target == TestController.prototype && value.propertyName == 'start')).toBeDefined();
     });
 });
 

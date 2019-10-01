@@ -1,12 +1,13 @@
-import {Hears, Help, TFChat, TFContext, TFController, TFMessage, TFTelegram} from '../../src/'
+import {Hears, Help, TFChat, TFContext, TFController, TFMessage, TFTelegram, UseMiddleware} from '../../src/'
 import {Inject} from "typedi";
-import {TestService} from "../services/TestService";
+import {Aaaa, TestService} from "../services/TestService";
 import {Chat, IncomingMessage} from 'telegraf/typings/telegram-types';
-import {Telegram} from "telegraf";
+import {ContextMessageUpdate, Telegram} from "telegraf";
 import {CurrentUser} from "../params";
 
 
 @TFController()
+@UseMiddleware(Aaaa)
 export class ControllerTest {
 
 
@@ -14,11 +15,11 @@ export class ControllerTest {
     service: TestService
 
     @Hears('test')
-    async test(@TFContext()ctx, @TFMessage()msg: IncomingMessage, @TFChat()chat: Chat, @TFTelegram() telegram: Telegram) {
-        // ctx.reply(await this.service.getBotName())
-        ctx.scene.enter('steps')
-        // console.log('Hello');
+    async test(@TFContext()ctx: ContextMessageUpdate, @TFMessage()msg: IncomingMessage, @TFChat()chat: Chat, @TFTelegram() telegram: Telegram) {
+        console.log('Hello');
+        ctx.reply('Hello');
     }
+
 
     @Help()
     async enter(@TFContext()ctx, @CurrentUser() user) {

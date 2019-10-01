@@ -1,9 +1,9 @@
 import 'reflect-metadata'
-import {buildBot} from "../src";
+import {buildBot, MetadataArgsStorage} from "../src";
 import {Container} from "typedi";
 
 const bot = buildBot({
-    token: process.env.BOT_TOKEN,
+    token: "<token>",
     container: Container,
     // bot: bot                 bot instance
     // session: session()       custom session
@@ -12,3 +12,4 @@ const bot = buildBot({
     // or controllers: [ControllerTest],
 }).startPolling()
 
+console.log(MetadataArgsStorage.composerMetadata);

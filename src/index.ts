@@ -21,3 +21,4 @@ export function buildBot(options: IBotOptions) {
 export * from './decorators'
 export * from './interfaces/IBotOptions'
 export * from './metadata'
+export * from './MetadataStorage'

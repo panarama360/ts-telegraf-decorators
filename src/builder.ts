@@ -1,4 +1,3 @@
-import MetadataStorage from "./MetadataStorage";
 import {IBotOptions} from "./interfaces/IBotOptions";
 import {getFromContainer} from "./container";
 import {Composer} from "telegraf";
@@ -6,6 +5,8 @@ import {Composer} from "telegraf";
 
 import {ComposerMetadata} from "./metadata/ComposerMetadata";
 import {WizardMetadata} from "./metadata/WizardMetadata";
+import {MetadataArgsStorage} from "./MetadataStorage";
+import {TFIMiddleware} from "./TFIMiddleware";
 
 const WizardScene = require('telegraf/scenes/wizard')
 const Stage = require('telegraf/stage')
@@ -19,23 +20,30 @@ export function buildFromMetadata(bot: any, options: IBotOptions): any {
 
     bot.use(stage.middleware())
 
-    MetadataStorage.composerMetadata
+    MetadataArgsStorage.composerMetadata
         .forEach(controller => {
-            let controllerInstance = getFromContainer(controller.target)
+            const controllerInstance = getFromContainer(controller.target)
+            const middlewareInstances = MetadataArgsStorage
+                .middlewareMetadata
+                .filter(value => value.target.prototype == controller.target.prototype).map(value => getFromContainer<TFIMiddleware>(value.middleware));
+            console.log('middlewareInstances', middlewareInstances);
             if (controller.options.type == "controller")
-                buildController(bot, controller, controllerInstance);
+                buildController(bot, controller, controllerInstance, middlewareInstances);
             else if (controller.options.type == "scene")
-                buildScene(stage, controller, controllerInstance);
+                buildScene(stage, controller, controllerInstance, middlewareInstances);
             else if (controller.options.type == "wizard")
-                buildWizard(bot, stage, controller, controllerInstance)
+                buildWizard(bot, stage, controller, controllerInstance, middlewareInstances)
         });
 
     return bot;
 }
 
-function buildScene(stage: any, controllerScene: ComposerMetadata, controllerInstance: any) {
+function buildScene(stage: any, controllerScene: ComposerMetadata, controllerInstance: any, middlewareInstances: TFIMiddleware[]) {
     const scene = new Scene(controllerScene.options.data.scene);
-    MetadataStorage
+    scene.use(...middlewareInstances.map(value => (ctx, next)=>{
+        return value.use(ctx, next);
+    }));
+    MetadataArgsStorage
         .handlers
         .filter(value => controllerScene.target.prototype == value.target)
         .forEach(handler => {
@@ -46,9 +54,12 @@ function buildScene(stage: any, controllerScene: ComposerMetadata, controllerIns
     stage.register(scene);
 }
 
-function buildController(bot: any, controller: ComposerMetadata, controllerInstance: any) {
+function buildController(bot: any, controller: ComposerMetadata, controllerInstance: any, middlewareInstances: TFIMiddleware[]) {
     const composer = new Composer();
-    MetadataStorage
+    (composer as any).use(...middlewareInstances.map(value => (ctx, next)=>{
+        return value.use(ctx, next);
+    }));
+    MetadataArgsStorage
         .handlers
         .filter(value => controller.target.prototype == value.target && value.type != "enter" && value.type != 'leave')
         .forEach(handler => {
@@ -59,8 +70,8 @@ function buildController(bot: any, controller: ComposerMetadata, controllerInsta
     bot.use(controller.options.data.compose ? controller.options.data.compose(composer) : composer);
 }
 
-function buildWizard(bot: any, stage: any, wizard: ComposerMetadata, controllerInstance: any) {
-    const group = MetadataStorage
+function buildWizard(bot: any, stage: any, wizard: ComposerMetadata, controllerInstance: any, middlewareInstances: TFIMiddleware[]) {
+    const group = MetadataArgsStorage
         .wizardStep
         .sort((a, b) => a.step - b.step)
         .reduce(function (r, a) {
@@ -72,7 +83,7 @@ function buildWizard(bot: any, stage: any, wizard: ComposerMetadata, controllerI
         const composer = new Composer();
         let method;
         stepsMetadata.forEach(stepMethod => {
-            const handlers = MetadataStorage.handlers.filter(value => value.target == wizard.target.prototype && value.propertyName == stepMethod.propertyName);
+            const handlers = MetadataArgsStorage.handlers.filter(value => value.target == wizard.target.prototype && value.propertyName == stepMethod.propertyName);
             if (handlers.length) {
 
                 handlers.forEach(handler => {
@@ -91,7 +102,7 @@ function buildWizard(bot: any, stage: any, wizard: ComposerMetadata, controllerI
 
 
     const wizardInstance = new WizardScene(wizard.options.data.name, ...steps);
-    const handlers = MetadataStorage.handlers.filter(value => wizard.target.prototype == value.target && !MetadataStorage.wizardStep.find(value1 => value1.propertyName == value.propertyName))
+    const handlers = MetadataArgsStorage.handlers.filter(value => wizard.target.prototype == value.target && !MetadataArgsStorage.wizardStep.find(value1 => value1.propertyName == value.propertyName))
     handlers.forEach(handler => {
         wizardInstance[handler.type](...[...handler.data, (ctx) => {
             return controllerInstance[handler.propertyName](...getInjectParams(ctx, wizard.target, handler.propertyName));
@@ -103,7 +114,7 @@ function buildWizard(bot: any, stage: any, wizard: ComposerMetadata, controllerI
 
 function getInjectParams(ctx: any, target: Function, methodName: string): any[] {
 
-    return MetadataStorage
+    return MetadataArgsStorage
         .paramMetadata
         .filter(value => value.target == target.prototype && methodName === value.propertyName)
         .sort((a, b) => a.index - b.index)
