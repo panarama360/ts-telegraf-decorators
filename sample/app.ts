@@ -11,5 +11,3 @@ const bot = buildBot({
     controllers: [__dirname+'/controllers/**.ts'],
     // or controllers: [ControllerTest],
 }).startPolling()
-
-console.log(MetadataArgsStorage.composerMetadata);

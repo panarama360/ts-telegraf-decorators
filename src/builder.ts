@@ -26,7 +26,6 @@ export function buildFromMetadata(bot: any, options: IBotOptions): any {
             const middlewareInstances = MetadataArgsStorage
                 .middlewareMetadata
                 .filter(value => value.target.prototype == controller.target.prototype).map(value => getFromContainer<TFIMiddleware>(value.middleware));
-            console.log('middlewareInstances', middlewareInstances);
             if (controller.options.type == "controller")
                 buildController(bot, controller, controllerInstance, middlewareInstances);
             else if (controller.options.type == "scene")
