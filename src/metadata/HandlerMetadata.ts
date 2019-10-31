@@ -1,6 +1,6 @@
 
 export interface HandlerMetadata {
-    type: 'start' | 'command' | 'help' | 'hears' | 'on' | 'leave' | 'enter' | 'action' ,
+    type: string ,
     target: Object,
     propertyName: string,
     data: any

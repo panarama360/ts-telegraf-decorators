@@ -78,6 +78,80 @@ export function Start(): Function {
     }
 }
 
+export function Settings(): Function {
+
+    return function (target: Object, propertyKey: string, descriptor: PropertyDescriptor) {
+        MetadataArgsStorage.handlers.push({
+            propertyName: propertyKey,
+            target,
+            type: "settings",
+            data: []
+        });
+        return descriptor;
+    }
+}
+export function Entity(entity: string | string[] | RegExp | RegExp[] | Function): Function {
+
+    return function (target: Object, propertyKey: string, descriptor: PropertyDescriptor) {
+        MetadataArgsStorage.handlers.push({
+            propertyName: propertyKey,
+            target,
+            type: "entity",
+            data: [entity]
+        });
+        return descriptor;
+    }
+}
+
+export function Mention(username: string | string[]): Function {
+
+    return function (target: Object, propertyKey: string, descriptor: PropertyDescriptor) {
+        MetadataArgsStorage.handlers.push({
+            propertyName: propertyKey,
+            target,
+            type: "mention",
+            data: [username]
+        });
+        return descriptor;
+    }
+}
+export function Phone(phone: string | string[]): Function {
+
+    return function (target: Object, propertyKey: string, descriptor: PropertyDescriptor) {
+        MetadataArgsStorage.handlers.push({
+            propertyName: propertyKey,
+            target,
+            type: "phone",
+            data: [phone]
+        });
+        return descriptor;
+    }
+}
+export function Hashtag(hashtag: string | string[]): Function {
+
+    return function (target: Object, propertyKey: string, descriptor: PropertyDescriptor) {
+        MetadataArgsStorage.handlers.push({
+            propertyName: propertyKey,
+            target,
+            type: "hashtag",
+            data: [hashtag]
+        });
+        return descriptor;
+    }
+}
+export function Cashtag(cashtag: string | string[]): Function {
+
+    return function (target: Object, propertyKey: string, descriptor: PropertyDescriptor) {
+        MetadataArgsStorage.handlers.push({
+            propertyName: propertyKey,
+            target,
+            type: "cashtag",
+            data: [cashtag]
+        });
+        return descriptor;
+    }
+}
+
 export function Help(): Function {
     return function (target: Object, propertyKey: string, descriptor: PropertyDescriptor) {
         MetadataArgsStorage.handlers.push({
@@ -139,7 +213,7 @@ export function Enter(): Function {
     }
 }
 
-export function Action(action: string | RegExp): Function {
+export function Action(action: string | string[] | RegExp | RegExp[]): Function {
     return function (target: Object, propertyKey: string, descriptor: PropertyDescriptor) {
 
         MetadataArgsStorage.handlers.push({
@@ -147,6 +221,30 @@ export function Action(action: string | RegExp): Function {
             target,
             type: "action",
             data: [action]
+        });
+        return descriptor;
+    }
+}
+export function InlineQuery(inlineQuery: string | string[] | RegExp | RegExp[]): Function {
+    return function (target: Object, propertyKey: string, descriptor: PropertyDescriptor) {
+
+        MetadataArgsStorage.handlers.push({
+            propertyName: propertyKey,
+            target,
+            type: "inlineQuery",
+            data: [inlineQuery]
+        });
+        return descriptor;
+    }
+}
+export function GameQuery(): Function {
+    return function (target: Object, propertyKey: string, descriptor: PropertyDescriptor) {
+
+        MetadataArgsStorage.handlers.push({
+            propertyName: propertyKey,
+            target,
+            type: "gameQuery",
+            data: []
         });
         return descriptor;
     }
