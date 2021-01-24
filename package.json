@@ -25,7 +25,7 @@
     "glob": "^7.1.6",
     "reflect-metadata": "^0.1.13",
     "telegraf": "^3.38.0",
-    "typedi": "^0.8.0"
+    "typedi": "^0.10.0"
   },
   "devDependencies": {
     "@types/jest": "26.0.16",
