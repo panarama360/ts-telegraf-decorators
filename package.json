@@ -24,7 +24,7 @@
   "dependencies": {
     "glob": "^7.1.6",
     "reflect-metadata": "^0.1.13",
-    "telegraf": "^3.38.0",
+    "telegraf": "^4.0.0",
     "typedi": "^0.8.0"
   },
   "devDependencies": {
