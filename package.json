@@ -22,7 +22,7 @@
     "ts"
   ],
   "dependencies": {
-    "glob": "^7.1.6",
+    "glob": "^9.0.0",
     "reflect-metadata": "^0.1.13",
     "telegraf": "^3.38.0",
     "typedi": "^0.8.0"
